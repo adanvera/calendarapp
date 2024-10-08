@@ -1,5 +1,7 @@
+import { RouterApp } from "./router/RouterApp"
+
 export const CalendarApp = () => {
   return (
-    <div>CalendarApp</div>
+    <RouterApp/>
   )
 }
