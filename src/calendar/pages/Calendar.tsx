@@ -1,5 +1,9 @@
+import { Navbar } from "../components"
+
 export const Calendar = () => {
   return (
-    <div>Calendar</div>
-  )
+    <>
+      <Navbar />
+    </>
+  ) 
 }
