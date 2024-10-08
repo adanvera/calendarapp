@@ -1,1 +1,1 @@
-export * from './pages/Calendar';
+export * from './pages/CalendarPage';

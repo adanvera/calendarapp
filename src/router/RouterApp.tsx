@@ -1,15 +1,15 @@
 import { Route, Routes } from "react-router-dom"
-import { Calendar } from "../calendar"
+import { CalendarPage } from "../calendar"
 import { Login } from "../auth"
 
 export const RouterApp = () => {
 
-  const auth = 'not-authenticated'
+  //const auth = 'not-authenticated'
 
   return (
     <Routes>
       <Route path="/auth/*" element={<Login />} />
-      <Route path="*" element={<Calendar />} />
+      <Route path="*" element={<CalendarPage />} />
     </Routes>
   )
 }

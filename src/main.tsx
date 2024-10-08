@@ -4,6 +4,7 @@ import { CalendarApp } from './CalendarApp'
 import { Provider } from 'react-redux'
 import { store } from './store'
 import { BrowserRouter } from 'react-router-dom'
+import './assets/custom.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
