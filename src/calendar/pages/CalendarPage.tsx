@@ -1,11 +1,15 @@
 import { addHours } from "date-fns";
 import { getMessages, localizer } from "../../helpers";
-import { calendarEvent, Navbar } from "../components";
-import { Calendar } from 'react-big-calendar'
-
+import { calendarEvent, CalendarModal, Navbar } from "../components";
+import { Calendar, View } from 'react-big-calendar'
+import { useState } from "react";
 
 export const CalendarPage = () => {
 
+  // variable of the last view
+  const [ lastView, setLastView ] = useState<View>(localStorage.getItem('lastView') as View || 'month')
+
+  // function to get the style of the event
   const eventStyleGetter = () => {
     const style = {
       backgroundColor: '#367CF7',
@@ -19,6 +23,7 @@ export const CalendarPage = () => {
     }
   }
 
+  // Array of events
   const myEventsList = [{
     title: 'All Day Event very long title',
     notes: 'this is a note',
@@ -31,6 +36,21 @@ export const CalendarPage = () => {
     }
   }]
 
+  // Functions to handle the events
+
+  const onDoubleClick = (event: any) => {
+    console.log('onDoubleClick',event);
+  }
+
+  const onSelectEvent = (event: any) => {
+    console.log('onSelectEvent', event);
+  }
+
+  const onViewChange = (event: any) => {
+    localStorage.setItem('lastView', event)
+    setLastView(event)
+  }
+
   return (
     <>
       <Navbar />
@@ -39,6 +59,7 @@ export const CalendarPage = () => {
         localizer={localizer}
         events={myEventsList}
         startAccessor="start"
+        defaultView={lastView}
         endAccessor="end"
         style={{ height: 'calc(100vh - 80px )' }}
         messages={getMessages}
@@ -46,7 +67,11 @@ export const CalendarPage = () => {
         components={{
           event: (props) => calendarEvent(props)
         }}
+        onDoubleClickEvent={onDoubleClick}
+        onSelectEvent={onSelectEvent}
+        onView={onViewChange}
       />
+      <CalendarModal />
     </>
   )
 }

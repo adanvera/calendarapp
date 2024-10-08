@@ -1,0 +1,56 @@
+/* Modal */
+.ReactModalPortal > div{
+    opacity: 0;
+    z-index: 999 !important;
+    transition: opacity .2s ease-in-out;
+}
+
+.ReactModalPortal .ReactModal__Overlay {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    transition: opacity .2s ease-in-out;
+    z-index: 999 !important;
+}
+
+.modal-fondo {
+    background-color: rgba(0, 0, 0, 0.3);
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    position: fixed;
+    z-index: 999 !important;
+}
+
+.ReactModalPortal .ReactModal__Overlay--after-open {
+    opacity: 1;
+    z-index: 999 !important;
+}
+
+.ReactModalPortal .ReactModal__Overlay--before-close {
+    opacity: 0;
+}
+
+.modal {
+    background: white;
+    border-radius: 5px;
+    color: rgb(51, 51, 51);
+    display: inline;
+    max-height: 620px;
+    max-width: 500px;
+    outline: none;
+    padding: 10px;
+    transition: opacity .2s ease-in-out;
+    width: 100%;
+    z-index: 999 !important;
+}
+
+.ReactModal__Overlay.ReactModal__Overlay--after-open {
+    z-index: 999 !important; /* Usa !important como último recurso */
+}
+
+.row.d-flex.date-class {
+    margin-left: auto;
+    margin-right: auto;
+}
