@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom"
-import { Login } from "../auth"
 import { Calendar } from "../calendar"
+import { Login } from "../auth/pages"
 
 export const RouterApp = () => {
 
