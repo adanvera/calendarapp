@@ -1,5 +1,5 @@
 import { getMessages, localizer } from "../../helpers";
-import { calendarEvent, CalendarModal, FabAddNew, Navbar } from "../components";
+import { calendarEvent, CalendarModal, FabAddNew, FabDelete, Navbar } from "../components";
 import { Calendar, View } from 'react-big-calendar'
 import { useState } from "react";
 import { useCalendarStore, useUiStore } from "../../hooks";
@@ -80,6 +80,7 @@ export const CalendarPage = () => {
       />
       <CalendarModal />
       <FabAddNew />
+      <FabDelete />
     </>
   )
 }

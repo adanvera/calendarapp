@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
     addNewEvent,
     AppDispatch,
+    onDeleteEvent,
     onSetActiveEvent,
     onUpdaEvent,
     RootState
@@ -46,10 +47,20 @@ export const useCalendarStore = () => {
         }
     }
 
+    /**
+     * @description Function to start deleting an event
+     * @returns void
+     */
+    const startDeleteEvent = () => {
+        dispatch(onDeleteEvent());
+    }
+
     return {
         events,
         activeEvent,
         setActiveEvent,
-        startNewEvent
+        startNewEvent,
+        startDeleteEvent,
+        hasEventSelected: !!activeEvent
     }
 }
