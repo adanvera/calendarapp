@@ -13,7 +13,7 @@ export const CalendarPage = () => {
   const [lastView, setLastView] = useState<View>(localStorage.getItem('lastView') as View || 'month');
   const { modalSatus } = useUiStore();
   const dispatch = useDispatch<AppDispatch>();
-  const { events } = useCalendarStore();
+  const { events, setActiveEvent } = useCalendarStore();
 
   // function to get the style of the event
   const eventStyleGetter = () => {
@@ -29,23 +29,35 @@ export const CalendarPage = () => {
     }
   }
 
-  // Functions to handle the events
-
+  /*
+  * Function to handle the double click event
+  * @param event
+  * @returns void
+  * @autor Adán Vera
+  * */
   const onDoubleClick = (event: any) => {
-    console.log('onDoubleClick', event);
     dispatch(modalOpen());
   }
 
+  /*
+  * Function to handle the select event
+  * @param event
+  * @returns void
+  * @autor Adán Vera
+  * */
   const onSelectEvent = (event: any) => {
-    console.log('onSelectEvent', event);
+    setActiveEvent(event);
   }
 
+  /*
+  * Function to handle the view change
+  * @param event
+  * @returns void
+  * @autor Adán Vera
+  * */
   const onViewChange = (event: any) => {
-    localStorage.setItem('lastView', event)
     setLastView(event)
   }
-
-  // end of the event functions
 
   return (
     <>

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import ReactModal, { Styles } from 'react-modal';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import { addHours, differenceInSeconds } from 'date-fns';
@@ -8,8 +8,8 @@ import { es } from 'date-fns/locale';
 import Swal from 'sweetalert2';
 import 'sweetalert2/src/sweetalert2.scss';
 import { useDispatch } from 'react-redux';
-import { useUiStore } from '../../hooks';
-import { AppDispatch, modalClose, modalStatus } from '../../store';
+import { useCalendarStore, useUiStore } from '../../hooks';
+import { AppDispatch, modalClose } from '../../store';
 
 registerLocale('es', es);
 
@@ -33,28 +33,42 @@ const customStyles: Styles = {
   }
 }
 
+// Initial form values
+const initialForm = {
+  title: '',
+  notes: '',
+  start: new Date(),
+  end: addHours(new Date(), 2)
+};
+
 export const CalendarModal = () => {
 
+  // define variables and get the actions from the store
   const [formSubmitted, setFormSubmitted] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const { modalSatus } = useUiStore();
+  const { activeEvent } = useCalendarStore();
+  const [formValues, setFormValues] = useState(initialForm);
 
+  // function to close the modal
   const closeModal = () => {
     dispatch(modalClose());
   }
 
-  const [formValues, setFormValues] = useState({
-    title: '',
-    notes: '',
-    start: new Date(),
-    end: addHours(new Date(), 2)
-  });
-
+  // function to set the class of the title
   const titleClass = useMemo(() => {
     if (!formSubmitted) return '';
     return formValues.title.trim().length <= 0 ? 'is-invalid' : '';
   }, [formValues.title, formSubmitted]);
 
+  // effect to set data if the active event is not null
+  useEffect(() => {
+    if (activeEvent !== null) {
+      setFormValues(activeEvent);
+    }
+  }, [activeEvent]);
+
+  // function to handle the input change
   const onInputChange = ({ target }: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormValues({
       ...formValues,
@@ -62,6 +76,7 @@ export const CalendarModal = () => {
     });
   }
 
+  // function to handle the date change
   const onDateChange = (date: Date | null, changing: string) => {
     if (!date) return;
     setFormValues({
@@ -70,6 +85,7 @@ export const CalendarModal = () => {
     });
   }
 
+  // function to handle the submit
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setFormSubmitted(true);

@@ -3,6 +3,7 @@ import { addHours } from 'date-fns';
 
 
 const tempEvent = [{
+  _id: new Date().getTime(),
   title: 'Event slice redux',
   notes: 'this is a note',
   start: new Date(),
@@ -21,11 +22,13 @@ export const calendarSlice = createSlice({
     events: tempEvent
   },
   reducers: {
-
+    onSetActiveEvent: (state, {payload}) => {
+      state.activeEvent = payload;
+    },
   }
 });
 
 // Action creators are generated for each case reducer function
-export const { 
-  
+export const {
+  onSetActiveEvent,
 } = calendarSlice.actions;
