@@ -1,13 +1,17 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import ReactModal, { Styles } from 'react-modal';
-import './modal.css';
 import DatePicker, { registerLocale } from 'react-datepicker';
-import "react-datepicker/dist/react-datepicker.css";
 import { addHours, differenceInSeconds } from 'date-fns';
+import './modal.css';
+import "react-datepicker/dist/react-datepicker.css";
 import { es } from 'date-fns/locale';
+import Swal from 'sweetalert2';
+import 'sweetalert2/src/sweetalert2.scss';
+import { useDispatch } from 'react-redux';
+import { useUiStore } from '../../hooks';
+import { AppDispatch, modalClose, modalStatus } from '../../store';
 
 registerLocale('es', es);
-  
 
 const customStyles: Styles = {
   overlay: {
@@ -31,10 +35,12 @@ const customStyles: Styles = {
 
 export const CalendarModal = () => {
 
-  const [isOpen, setIsOpen] = useState(true);
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+  const { modalSatus } = useUiStore();
 
   const closeModal = () => {
-    setIsOpen(false)
+    dispatch(modalClose());
   }
 
   const [formValues, setFormValues] = useState({
@@ -43,6 +49,11 @@ export const CalendarModal = () => {
     start: new Date(),
     end: addHours(new Date(), 2)
   });
+
+  const titleClass = useMemo(() => {
+    if (!formSubmitted) return '';
+    return formValues.title.trim().length <= 0 ? 'is-invalid' : '';
+  }, [formValues.title, formSubmitted]);
 
   const onInputChange = ({ target }: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormValues({
@@ -61,27 +72,25 @@ export const CalendarModal = () => {
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setFormSubmitted(true);
     const diferencia = differenceInSeconds(formValues.end, formValues.start);
-    if(isNaN(diferencia) || diferencia < 0){
+    if (isNaN(diferencia) || diferencia < 0) {
       console.log('error en la fecha');
+      Swal.fire('Error', 'La fecha fin debe ser mayor a la fecha de inicio', 'error');
       return;
     }
-
-    if(formValues.title.trim().length <= 0){
+    if (formValues.title.trim().length <= 0) {
       console.log('error en el titulo');
       return;
     }
 
     console.log(formValues);
-
-    
-    
     //closeModal();
   }
 
   return (
     <ReactModal
-      isOpen={isOpen}
+      isOpen={modalSatus}
       onRequestClose={() => closeModal()}
       style={customStyles}
       overlayClassName={'modal-fondo'}
@@ -129,7 +138,7 @@ export const CalendarModal = () => {
           <label>Titulo y notas</label>
           <input
             type="text"
-            className="form-control"
+            className={`form-control ${titleClass}`}
             placeholder="Título del evento"
             name="title"
             autoComplete="off"
@@ -150,7 +159,6 @@ export const CalendarModal = () => {
           ></textarea>
           <small id="emailHelp" className="form-text text-muted">Información adicional</small>
         </div>
-
         <button
           type="submit"
           className="btn btn-outline-primary btn-block"
@@ -158,7 +166,6 @@ export const CalendarModal = () => {
           <i className="far fa-save"></i>
           <span> Guardar</span>
         </button>
-
       </form>
     </ReactModal>
   )

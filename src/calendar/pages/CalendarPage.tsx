@@ -3,11 +3,17 @@ import { getMessages, localizer } from "../../helpers";
 import { calendarEvent, CalendarModal, Navbar } from "../components";
 import { Calendar, View } from 'react-big-calendar'
 import { useState } from "react";
+import { useCalendarStore, useUiStore } from "../../hooks";
+import { useDispatch } from "react-redux";
+import { AppDispatch, modalOpen } from "../../store";
 
 export const CalendarPage = () => {
 
   // variable of the last view
-  const [ lastView, setLastView ] = useState<View>(localStorage.getItem('lastView') as View || 'month')
+  const [lastView, setLastView] = useState<View>(localStorage.getItem('lastView') as View || 'month');
+  const { modalSatus } = useUiStore();
+  const dispatch = useDispatch<AppDispatch>();
+  const { events } = useCalendarStore();
 
   // function to get the style of the event
   const eventStyleGetter = () => {
@@ -23,23 +29,11 @@ export const CalendarPage = () => {
     }
   }
 
-  // Array of events
-  const myEventsList = [{
-    title: 'All Day Event very long title',
-    notes: 'this is a note',
-    start: new Date(),
-    end: addHours(new Date(), 2),
-    bgColor: '#fafafa',
-    user: {
-      _id: '123',
-      name: 'Adán'
-    }
-  }]
-
   // Functions to handle the events
 
   const onDoubleClick = (event: any) => {
-    console.log('onDoubleClick',event);
+    console.log('onDoubleClick', event);
+    dispatch(modalOpen());
   }
 
   const onSelectEvent = (event: any) => {
@@ -51,13 +45,15 @@ export const CalendarPage = () => {
     setLastView(event)
   }
 
+  // end of the event functions
+
   return (
     <>
       <Navbar />
       <Calendar
         culture='es-ES'
         localizer={localizer}
-        events={myEventsList}
+        events={events}
         startAccessor="start"
         defaultView={lastView}
         endAccessor="end"
