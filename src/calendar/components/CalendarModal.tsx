@@ -47,7 +47,7 @@ export const CalendarModal = () => {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const { modalSatus } = useUiStore();
-  const { activeEvent } = useCalendarStore();
+  const { activeEvent, startNewEvent } = useCalendarStore();
   const [formValues, setFormValues] = useState(initialForm);
 
   // function to close the modal
@@ -86,7 +86,7 @@ export const CalendarModal = () => {
   }
 
   // function to handle the submit
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setFormSubmitted(true);
     const diferencia = differenceInSeconds(formValues.end, formValues.start);
@@ -101,7 +101,10 @@ export const CalendarModal = () => {
     }
 
     console.log(formValues);
-    //closeModal();
+
+    await startNewEvent(formValues);
+    closeModal();
+    setFormSubmitted(false);
   }
 
   return (

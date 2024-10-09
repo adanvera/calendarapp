@@ -54,3 +54,14 @@
     margin-left: auto;
     margin-right: auto;
 }
+
+.fab{
+    border-radius: 100%;
+    bottom: 25px;
+    font-size: 30px;
+    padding: 25px;
+    padding-top: 24px;
+    padding-bottom: 24px;
+    position: fixed;
+    right: 25px;
+}

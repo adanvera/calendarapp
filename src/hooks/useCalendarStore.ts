@@ -1,10 +1,16 @@
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, onSetActiveEvent, RootState } from "../store"; // Adjust the import path according to your project structure
+import {
+    addNewEvent,
+    AppDispatch,
+    onSetActiveEvent,
+    onUpdaEvent,
+    RootState
+} from "../store";
 
 export const useCalendarStore = () => {
-    
+
     const dispatch = useDispatch<AppDispatch>();
-    
+
     /**
      * Get the actions and datas from the calendar store
      * @returns actions/data
@@ -13,7 +19,7 @@ export const useCalendarStore = () => {
     const { events, activeEvent } = useSelector((state: RootState) => state.calendar);
 
     /**
-     * Function to set the active event
+     * @description Function to set the active event
      * @param calendarEvent
      * @returns void
      * @author Adán Vera
@@ -22,9 +28,28 @@ export const useCalendarStore = () => {
         dispatch(onSetActiveEvent(calendarEvent));
     }
 
+    /** 
+    * @description Function to start saving a new event
+    * @param calendarEvent
+    * @returns void
+    * */
+    const startNewEvent = async (calendarEvent: any) => {
+        if (calendarEvent._id) {
+            dispatch(onUpdaEvent({
+                ...calendarEvent,
+            }));
+        } else {
+            dispatch(addNewEvent({
+                ...calendarEvent,
+                _id: new Date().getTime(),
+            }));
+        }
+    }
+
     return {
         events,
         activeEvent,
-        setActiveEvent
+        setActiveEvent,
+        startNewEvent
     }
 }
