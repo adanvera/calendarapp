@@ -29,10 +29,28 @@ export const useAuthStore = () => {
         }
     }
 
+    const startRegister = async ({ registerName, registerMail, registerPassword, registerLastName }: { registerName: string, registerMail: string, registerPassword: string, registerLastName: string }) => {
+        dispatch(checking());
+        try {
+            const resp = await calendarApi.post('/api/auth/new', { name: registerName, email: registerMail, password: registerPassword, lastname: registerLastName });
+            const { data } = resp
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('token-init-date', new Date().getTime().toString());
+            dispatch(login({ name: data.name, email: data.email, lastname: data.lastname }));
+        } catch (error) {
+            const { response } = error as { response: { data: { msg: string } } };
+            dispatch(logout(response.data.msg));
+            setTimeout(() => {
+                dispatch(clearError());
+            }, 10);
+        }
+    }
+
     return {
         status,
         user,
         errorMessage,
-        startLogin
+        startLogin,
+        startRegister
     }
 }

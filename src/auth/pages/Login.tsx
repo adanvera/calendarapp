@@ -10,6 +10,7 @@ const loginForm = {
 
 const registerForm = {
     registerName: '',
+    registerLastName: '',
     registerMail: '',
     registerPassword: '',
     registerPassword2: ''
@@ -19,8 +20,8 @@ export const Login = () => {
 
     // initializations for the login and register forms
     const { formState: { email, password }, onInputChange: onChangeLogin } = useForm(loginForm);
-    const { formState: { registerName, registerMail, registerPassword, registerPassword2 }, onInputChange: onChangeRegister } = useForm(registerForm);
-    const { startLogin, errorMessage } = useAuthStore();
+    const { formState: { registerName, registerLastName, registerMail, registerPassword, registerPassword2 }, onInputChange: onChangeRegister } = useForm(registerForm);
+    const { startLogin, errorMessage, startRegister } = useAuthStore();
 
     /**
      * @description This function is called when the login form is submitted
@@ -37,10 +38,14 @@ export const Login = () => {
      */
     const registerSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        console.log("Registrando con", registerName, registerMail, registerPassword, registerPassword2);
+        if (registerPassword !== registerPassword2) {
+            return Swal.fire('Error en el registro', 'Las contraseñas deben ser iguales', 'error');
+        }
+
+        startRegister({ registerName, registerMail, registerPassword, registerLastName });
     }
 
-    useEffect (() => {
+    useEffect(() => {
         if (errorMessage !== undefined) {
             Swal.fire('Error en la autenticación', errorMessage, 'error');
         }
@@ -96,6 +101,16 @@ export const Login = () => {
                                     placeholder="Nombre"
                                     name='registerName'
                                     value={registerName}
+                                    onChange={onChangeRegister}
+                                />
+                            </div>
+                            <div className="form-group mb-2">
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Apellido"
+                                    name='registerLastName'
+                                    value={registerLastName}
                                     onChange={onChangeRegister}
                                 />
                             </div>
