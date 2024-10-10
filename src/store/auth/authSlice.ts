@@ -5,7 +5,7 @@ export const authSlice = createSlice({
   initialState: {
     satus: 'checking', // 'checking' | 'authenticated' | 'not-authenticated'
     user: null as null | Record<string, any>,
-    errorMessage: ''
+    errorMessage: undefined as any
   },
   reducers: {
     checking: (state) => {
@@ -17,13 +17,16 @@ export const authSlice = createSlice({
       state.satus = 'authenticated';
       state.user = payload;
     },
-    logout: (state) => {
+    logout: (state, { payload }) => {
       state.satus = 'not-authenticated';
       state.user = {} as Record<string, any>;
+      state.errorMessage = payload;
+    },
+    clearError: (state) => {
       state.errorMessage = undefined as any;
     }
   }
 });
 
 // Action creators are generated for each case reducer function
-export const { checking, login, logout } = authSlice.actions;
+export const { checking, login, logout, clearError } = authSlice.actions;
