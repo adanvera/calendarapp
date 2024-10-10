@@ -3,22 +3,22 @@ import { createSlice } from '@reduxjs/toolkit';
 export const authSlice = createSlice({
   name: 'auth ',
   initialState: {
-    satus: 'checking', // 'checking' | 'authenticated' | 'not-authenticated'
+    status: 'checking', // 'checking' | 'authenticated' | 'not-authenticated'
     user: null as null | Record<string, any>,
     errorMessage: undefined as any
   },
   reducers: {
     checking: (state) => {
-      state.satus = 'checking';
+      state.status = 'checking';
       state.user = {} as Record<string, any>;
       state.errorMessage = undefined as any;
     },
     login: (state, { payload }) => {
-      state.satus = 'authenticated';
+      state.status = 'authenticated';
       state.user = payload;
     },
     logout: (state, { payload }) => {
-      state.satus = 'not-authenticated';
+      state.status = 'not-authenticated';
       state.user = {} as Record<string, any>;
       state.errorMessage = payload;
     },
