@@ -1,8 +1,8 @@
 import { getMessages, localizer } from "../../helpers";
 import { calendarEvent, CalendarModal, FabAddNew, FabDelete, Navbar } from "../components";
 import { Calendar, View } from 'react-big-calendar'
-import { useState } from "react";
-import { useCalendarStore, useUiStore } from "../../hooks";
+import { useEffect, useMemo, useState } from "react";
+import { useAuthStore, useCalendarStore } from "../../hooks";
 import { useDispatch } from "react-redux";
 import { AppDispatch, modalOpen } from "../../store";
 
@@ -10,14 +10,14 @@ export const CalendarPage = () => {
 
   // variable of the last view
   const [lastView, setLastView] = useState<View>(localStorage.getItem('lastView') as View || 'month');
-  const { modalSatus } = useUiStore();
   const dispatch = useDispatch<AppDispatch>();
   const { events, setActiveEvent } = useCalendarStore();
+  const { color } = useAuthStore();
 
   // function to get the style of the event
   const eventStyleGetter = () => {
     const style = {
-      backgroundColor: '#367CF7',
+      backgroundColor: color,
       borderRadius: '0px',
       opacity: 0.8,
       display: 'block',
@@ -27,6 +27,11 @@ export const CalendarPage = () => {
       style
     }
   }
+
+  // usar useMemo para que solo se ejecute cuando cambie el color
+  useMemo(() => {
+    eventStyleGetter();
+  }, [color])
 
   /*
   * Function to handle the double click event

@@ -8,9 +8,6 @@ export const RouterApp = () => {
   const { status, checkAuthToken } = useAuthStore();
   const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true' ? true : false;
 
-  console.log('isAuthenticated', isAuthenticated);
-
-
   useEffect(() => {
     checkAuthToken();
   }, []);

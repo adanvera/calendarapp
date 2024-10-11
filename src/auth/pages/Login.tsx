@@ -45,9 +45,6 @@ export const Login = () => {
     const { startLogin, errorMessage, startRegister } = useAuthStore();
     const [formSubmitted, setFormSubmitted] = useState(false);
 
-    console.log('isFormValid', isFormValid);
-
-
     /**
      * @description This function is called when the login form is submitted
      * @param event 

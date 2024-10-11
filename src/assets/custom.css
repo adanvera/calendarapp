@@ -26,3 +26,51 @@
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+.circle-color{
+    color: white;
+    height: 20px;
+    width: 20px;
+    border-radius: 100%;
+    display: block;
+    cursor: pointer;
+}
+
+.circle-color.color-one{
+    background-color: #3498db;
+}
+
+.circle-color.color-two{
+    background-color: #e74c3c;
+}
+
+.circle-color.color-three{
+    background-color: #f39c12;
+}
+
+.circle-color.color-one:hover{
+    background-color: #3498db;
+    border: 1px solid #3498db;
+    transform: scale(1.2);
+}
+
+.circle-color.color-two:hover{
+    background-color: #e74c3c;
+    border: 1px solid #e74c3c;
+    transform: scale(1.2);
+}
+
+.circle-color.color-three:hover{
+    background-color: #f39c12;
+    border: 1px solid #f39c12;
+    transform: scale(1.2);
+}
+
+span.circle-color.mr-1 {
+    padding-right: 1rem;
+    margin-right: 0.5rem;
+}
+
+.rigthside{
+    padding-right: 1rem;
+}

@@ -5,7 +5,8 @@ export const authSlice = createSlice({
   initialState: {
     status: 'not-authenticated', // 'checking' | 'authenticated' | 'not-authenticated'
     user: null as null | Record<string, any>,
-    errorMessage: undefined as any
+    errorMessage: undefined as any,
+    color: localStorage.getItem('color') || '#3498db'
   },
   reducers: {
     checking: (state) => {
@@ -24,9 +25,12 @@ export const authSlice = createSlice({
     },
     clearError: (state) => {
       state.errorMessage = undefined as any;
+    },
+    updateColor: (state, { payload }) => {
+      state.color = payload;
     }
   }
 });
 
 // Action creators are generated for each case reducer function
-export const { checking, login, logout, clearError } = authSlice.actions;
+export const { checking, login, logout, clearError , updateColor} = authSlice.actions;

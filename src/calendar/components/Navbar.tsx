@@ -2,8 +2,15 @@ import { useAuthStore } from "../../hooks"
 
 export const Navbar = () => {
 
-    const { user, onStartLogout } = useAuthStore();
-    const fullName = user ? `${user.name} ${user.lastname}` : '';
+    const { user, onStartLogout, onStartUpdate } = useAuthStore();
+    const name = user ? user.name === undefined ? '' : user.name : '';
+    const lastname = user ? user.lastname === undefined ? '' : user.lastname : '';
+    const fullName = user ? `${name} ${lastname}` : '';
+
+    const handleColorChange = (preferences: string) => {
+        const uid = user ? user.uid : '';
+        onStartUpdate({ uid, preferences });
+    };
 
     const handleLogout = () => {
         onStartLogout();
@@ -16,12 +23,27 @@ export const Navbar = () => {
                     <i className="fas fa-calendar-alt"></i>
                     &nbsp; {fullName}
                 </span>
-                <button
-                    className="btn btn-outline-danger"
-                    onClick={handleLogout}
-                >
-                    <i className="fas fa-sign-out-alt"></i>
-                </button>
+
+                <div className="d-flex">
+                //hacer una circunferencia
+                    <div className="navbar-text d-flex rigthside">
+                        <span
+                            onClick={() => handleColorChange('#3498db')}
+                            className="circle-color color-one mr-1"></span>
+                        <span
+                            onClick={() => handleColorChange('#e74c3c')}
+                            className="circle-color color-two mr-1"></span>
+                        <span
+                            onClick={() => handleColorChange('#f39c12')}
+                            className="circle-color color-three mr-1"></span>
+                    </div>
+                    <button
+                        className="btn btn-outline-danger"
+                        onClick={handleLogout}
+                    >
+                        <i className="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
             </div>
         </div>
     )

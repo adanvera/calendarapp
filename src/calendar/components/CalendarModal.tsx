@@ -9,7 +9,7 @@ import Swal from 'sweetalert2';
 import 'sweetalert2/src/sweetalert2.scss';
 import { useDispatch } from 'react-redux';
 import { useCalendarStore, useUiStore } from '../../hooks';
-import { AppDispatch, modalClose, onSetActiveEvent } from '../../store';
+import { AppDispatch, modalClose } from '../../store';
 
 registerLocale('es', es);
 
@@ -47,11 +47,12 @@ export const CalendarModal = () => {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const { modalSatus } = useUiStore();
-  const { activeEvent, startNewEvent } = useCalendarStore();
+  const { activeEvent, startNewEvent, setActiveEvent } = useCalendarStore();
   const [formValues, setFormValues] = useState(initialForm);
 
   // function to close the modal
   const closeModal = () => {
+    setActiveEvent({}); // clear the active event
     dispatch(modalClose());
   }
 
@@ -99,9 +100,6 @@ export const CalendarModal = () => {
       console.log('error en el titulo');
       return;
     }
-
-    console.log(formValues);
-
     await startNewEvent(formValues);
     closeModal();
     setFormSubmitted(false);
@@ -114,17 +112,16 @@ export const CalendarModal = () => {
       style={customStyles}
       overlayClassName={'modal-fondo'}
       closeTimeoutMS={200}
-      //disable close on click outside
       shouldCloseOnOverlayClick={false}
-      
+
     >
-     <div>
+      <div className='d-flex container justify-content-between align-items-center'>
         <h1> Nuevo evento </h1>
-        <hr />
+        <span className='closesize'>
+          <i className="fas fa-times" onClick={closeModal}></i>
+        </span>
 
-        <span> <i className="far fa-calendar-plus"></i> </span>
-
-     </div>
+      </div>
       <hr />
       <form className="container" onSubmit={onSubmit}>
 

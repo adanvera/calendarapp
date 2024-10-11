@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, checking, clearError, login, logout, RootState } from "../store";
+import { AppDispatch, checking, clearError, login, logout, RootState, updateColor } from "../store";
 import { calendarApi } from "../api";
 
 export const useAuthStore = () => {
@@ -9,7 +9,8 @@ export const useAuthStore = () => {
     const {
         status,
         user,
-        errorMessage
+        errorMessage,
+        color
     } = useSelector((state: RootState) => state.auth);
 
     /**
@@ -23,11 +24,12 @@ export const useAuthStore = () => {
         try {
             const resp = await calendarApi.post('/api/auth', { email, password });
             const { data } = resp;
-            const { name: nombre, lastname: apellido, email: correo } = data;
+            const { name: nombre, lastname: apellido, email: correo, preferences } = data;
             localStorage.setItem('token', data.token);
             localStorage.setItem('token-init-date', new Date().getTime().toString());
             localStorage.setItem('isAuthenticated', 'true');
-            dispatch(login({ name: nombre, email: correo, lastname: apellido }));
+            localStorage.setItem('color', color);
+            dispatch(login({ name: nombre, email: correo, lastname: apellido, color: preferences, uid: data.uid }));
         } catch (error) {
             console.log("error", error);
             dispatch(logout('Credentials are invalid'));
@@ -52,6 +54,7 @@ export const useAuthStore = () => {
             const { data } = resp
             localStorage.setItem('token', data.token);
             localStorage.setItem('token-init-date', new Date().getTime().toString());
+            localStorage.setItem('isAuthenticated', 'true');
             dispatch(login({ name: data.name, email: data.email, lastname: data.lastname }));
         } catch (error) {
             const { response } = error as { response: { data: { msg: string } } };
@@ -74,7 +77,8 @@ export const useAuthStore = () => {
             const { data } = await calendarApi.get('/api/auth/renew');
             localStorage.setItem('token', data.token);
             localStorage.setItem('token-init-date', new Date().getTime().toString());
-            dispatch(login({ name: data.name, uid: data.uid, lastname: data.lastname }));
+            localStorage.setItem('color', data.preferences);
+            dispatch(login({ name: data.name, uid: data.uid, lastname: data.lastname, color: data.preferences }));
         } catch (error) {
             localStorage.clear();
             dispatch(logout({}));
@@ -93,6 +97,19 @@ export const useAuthStore = () => {
         }, 1000);
     }
 
+    // TODO::: ahora mismo solo funciona para cambiar de color en las preferencias, 
+    // modificar para cambiar el nombre y el apellido y otros datos
+    const onStartUpdate = async ({ uid, preferences }: { uid: string, preferences: string }) => {
+        try {
+            const resp = await calendarApi.put(`/api/auth/update/${uid}`, { preferences });
+            const { data } = resp;
+            localStorage.setItem('color', data.preferences);
+            dispatch(updateColor(data.preferences));
+        } catch (error) {
+            console.log("error", error);
+        }
+    };
+
     return {
         status,
         user,
@@ -100,6 +117,8 @@ export const useAuthStore = () => {
         startLogin,
         startRegister,
         checkAuthToken,
-        onStartLogout
+        onStartLogout,
+        color,
+        onStartUpdate
     }
 }

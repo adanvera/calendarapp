@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
-import { useCalendarStore, useUiStore } from "../../hooks";
+import { useAuthStore, useCalendarStore, useUiStore } from "../../hooks";
 import { addHours } from "date-fns";
 
 export const FabAddNew = () => {
@@ -8,6 +8,7 @@ export const FabAddNew = () => {
     const { modalOpen } = useUiStore();
     const dispatch = useDispatch<AppDispatch>();
     const { setActiveEvent } = useCalendarStore();
+    const { color } = useAuthStore();
 
     const onSartNewEvent = () => {
         setActiveEvent({
@@ -26,7 +27,11 @@ export const FabAddNew = () => {
 
     return (
         <button
-            className="btn btn-primary fab"
+            className="btn btn-primary fab addnew"
+            style={{
+                backgroundColor: color,
+                borderColor: color
+            }}
             onClick={onSartNewEvent}
         >
             <i className="fas fa-plus"></i>
