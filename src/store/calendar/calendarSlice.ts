@@ -1,6 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 interface CalendarEvent {
+  title: string;
+  notes: string;
+  end: string | number | Date;
+  start: string | number | Date;
   id: string;
   // Add other properties of the event here
 }
@@ -39,6 +43,11 @@ export const calendarSlice = createSlice({
         }
       });
     },
+    onLogoutCalendar: (state) => {
+      state.activeEvent = null as any;
+      state.isLoading = true;
+      state.events = null as any;
+    }
   }
 });
 
@@ -48,5 +57,6 @@ export const {
   addNewEvent,
   onUpdaEvent,
   onDeleteEvent,
-  onLoadEvents
+  onLoadEvents,
+  onLogoutCalendar
 } = calendarSlice.actions;

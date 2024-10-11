@@ -47,12 +47,11 @@ export const CalendarModal = () => {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const { modalSatus } = useUiStore();
-  const { activeEvent, startNewEvent, setActiveEvent } = useCalendarStore();
+  const { activeEvent, startNewEvent } = useCalendarStore();
   const [formValues, setFormValues] = useState(initialForm);
 
   // function to close the modal
   const closeModal = () => {
-    setActiveEvent({}); // clear the active event
     dispatch(modalClose());
   }
 
@@ -65,7 +64,11 @@ export const CalendarModal = () => {
   // effect to set data if the active event is not null
   useEffect(() => {
     if (activeEvent !== null) {
-      setFormValues(activeEvent);
+      setFormValues({
+        ...activeEvent,
+        start: new Date(activeEvent.start),
+        end: new Date(activeEvent.end)
+      });
     }
   }, [activeEvent]);
 
@@ -80,10 +83,25 @@ export const CalendarModal = () => {
   // function to handle the date change
   const onDateChange = (date: Date | null, changing: string) => {
     if (!date) return;
-    setFormValues({
-      ...formValues,
-      [changing]: date
-    });
+    if (changing === 'start') {
+      if (date > formValues.end) {
+        setFormValues({
+          ...formValues,
+          start: date,
+          end: addHours(date, 2)
+        });
+      } else {
+        setFormValues({
+          ...formValues,
+          start: date
+        });
+      }
+    } else {
+      setFormValues({
+        ...formValues,
+        end: date
+      });
+    }
   }
 
   // function to handle the submit

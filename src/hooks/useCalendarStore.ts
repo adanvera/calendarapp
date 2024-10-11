@@ -27,12 +27,7 @@ export const useCalendarStore = () => {
 
             const { data } = await calendarApi.get('/events');
             const events = convertEventDate(data.events);
-
             dispatch(onLoadEvents(events));
-
-            console.log('eventsevents', events);
-
-
         } catch (error) {
             console.log("error", error);
         }
@@ -55,9 +50,16 @@ export const useCalendarStore = () => {
     * */
     const startNewEvent = async (calendarEvent: any) => {
         if (calendarEvent.id) {
-            dispatch(onUpdaEvent({
-                ...calendarEvent,
-            }));
+            const { start, end } = calendarEvent;
+            const formatDateTime = (date: Date): string => {
+                const pad = (num: number): string => num.toString().padStart(2, '0');
+                return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+            };
+            calendarEvent.start = formatDateTime(new Date(start));
+            calendarEvent.end = formatDateTime(new Date(end));
+            const { data } = await calendarApi.put(`/events/${calendarEvent.id}`, calendarEvent);
+            const event = data.eventUpdate;
+            dispatch(onUpdaEvent({ ...event }));
         } else {
             try {
                 const { start, end } = calendarEvent;
@@ -72,12 +74,6 @@ export const useCalendarStore = () => {
             } catch (error) {
                 console.log("error", error);
             }
-
-
-            // dispatch(addNewEvent({
-            //     ...calendarEvent,
-            //     _id: new Date().getTime(),
-            // }));
         }
     }
 
@@ -85,7 +81,17 @@ export const useCalendarStore = () => {
      * @description Function to start deleting an event
      * @returns void
      */
-    const startDeleteEvent = () => {
+    const startDeleteEvent = async () => {
+        try {
+            if (activeEvent) {
+                const { id } = activeEvent;
+                await calendarApi.delete(`/events/${id}`);
+                dispatch(onDeleteEvent());
+            }
+        } catch (error) {
+            console.log("error", error);
+        }
+
         dispatch(onDeleteEvent());
     }
 

@@ -18,11 +18,14 @@ interface EventProps<T> {
 export const calendarEvent = (props: EventProps<any>) => {
     const { event } = props;
     const { title, user } = event;
+    const name = user ? user.name !== undefined ? user.name : '' : '';
+    const lastname = user ? user.lastname !== undefined ? user.lastname : '' : '';
+    const fullName = `${name} ${lastname}`;
     return (
         <>
             <div>
                 <strong>{title}</strong>
-                <span> - {user.name}</span>
+                <span> - {fullName}</span>
             </div>
         </>
     )

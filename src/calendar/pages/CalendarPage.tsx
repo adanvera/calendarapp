@@ -39,7 +39,7 @@ export const CalendarPage = () => {
   * @returns void
   * @autor Adán Vera
   * */
-  const onDoubleClick = (event: any) => {
+  const onDoubleClick = () => {
     dispatch(modalOpen());
   }
 
@@ -74,9 +74,9 @@ export const CalendarPage = () => {
         culture='es-ES'
         localizer={localizer}
         events={events}
-        startAccessor={(event) => new Date(event.start)}
+        startAccessor={(event: any) => new Date(event.start)}
         defaultView={lastView}
-        endAccessor={(event) => new Date(event.end)}
+        endAccessor={(event: any) => new Date(event.end)}
         style={{ height: 'calc(100vh - 80px )' }}
         messages={getMessages}
         eventPropGetter={eventStyleGetter}
