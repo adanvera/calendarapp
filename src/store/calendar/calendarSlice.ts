@@ -1,25 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { addHours } from 'date-fns';
 
-
-const tempEvent = [{
-  _id: new Date().getTime(),
-  title: 'Event slice redux',
-  notes: 'this is a note',
-  start: new Date(),
-  end: addHours(new Date(), 2),
-  bgColor: '#fafafa',
-  user: {
-    _id: '123',
-    name: 'Adán'
-  }
-}]
+interface CalendarEvent {
+  id: string;
+  // Add other properties of the event here
+}
 
 export const calendarSlice = createSlice({
   name: 'calendar ',
   initialState: {
-    activeEvent: null,
-    events: tempEvent
+    activeEvent: null as CalendarEvent | null,
+    isLoading: true,
+    events: [] as CalendarEvent[]
   },
   reducers: {
     onSetActiveEvent: (state, { payload }) => {
@@ -30,14 +21,24 @@ export const calendarSlice = createSlice({
       state.activeEvent = null;
     },
     onUpdaEvent: (state, { payload }) => {
-      state.events = state.events.map(event => event._id === payload._id ? payload : event);
+      state.events = state.events.map(event => event.id === payload.id ? payload : event);
     },
     onDeleteEvent: (state) => {
       if (state.activeEvent) {
-        state.events = state.events.filter(event => event._id !== state.activeEvent._id);
+        state.events = state.events.filter(event => state.activeEvent && event.id !== state.activeEvent.id);
         state.activeEvent = null;
       }
-    }
+    },
+    onLoadEvents: (state, { payload = [] }) => {
+      state.isLoading = false;
+      // state.events = payload;
+      payload.forEach((event: CalendarEvent) => {
+        const exists = state.events.some((dbEvent: CalendarEvent) => dbEvent.id === event.id);
+        if (!exists) {
+          state.events.push(event);
+        }
+      });
+    },
   }
 });
 
@@ -46,5 +47,6 @@ export const {
   onSetActiveEvent,
   addNewEvent,
   onUpdaEvent,
-  onDeleteEvent
+  onDeleteEvent,
+  onLoadEvents
 } = calendarSlice.actions;

@@ -22,7 +22,7 @@ export const useAuthStore = () => {
     const startLogin = async ({ email, password }: { email: string, password: string }) => {
         dispatch(checking());
         try {
-            const resp = await calendarApi.post('/api/auth', { email, password });
+            const resp = await calendarApi.post('/auth', { email, password });
             const { data } = resp;
             const { name: nombre, lastname: apellido, email: correo, preferences } = data;
             localStorage.setItem('token', data.token);
@@ -50,7 +50,7 @@ export const useAuthStore = () => {
     const startRegister = async ({ registerName, registerMail, registerPassword, registerLastName }: { registerName: string, registerMail: string, registerPassword: string, registerLastName: string }) => {
         dispatch(checking());
         try {
-            const resp = await calendarApi.post('/api/auth/new', { name: registerName, email: registerMail, password: registerPassword, lastname: registerLastName });
+            const resp = await calendarApi.post('/auth/new', { name: registerName, email: registerMail, password: registerPassword, lastname: registerLastName });
             const { data } = resp
             localStorage.setItem('token', data.token);
             localStorage.setItem('token-init-date', new Date().getTime().toString());
@@ -74,7 +74,7 @@ export const useAuthStore = () => {
         dispatch(checking());
         if (!token) return dispatch(logout({}));
         try {
-            const { data } = await calendarApi.get('/api/auth/renew');
+            const { data } = await calendarApi.get('/auth/renew');
             localStorage.setItem('token', data.token);
             localStorage.setItem('token-init-date', new Date().getTime().toString());
             localStorage.setItem('color', data.preferences);
@@ -101,7 +101,7 @@ export const useAuthStore = () => {
     // modificar para cambiar el nombre y el apellido y otros datos
     const onStartUpdate = async ({ uid, preferences }: { uid: string, preferences: string }) => {
         try {
-            const resp = await calendarApi.put(`/api/auth/update/${uid}`, { preferences });
+            const resp = await calendarApi.put(`/auth/update/${uid}`, { preferences });
             const { data } = resp;
             localStorage.setItem('color', data.preferences);
             dispatch(updateColor(data.preferences));

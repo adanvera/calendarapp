@@ -11,7 +11,7 @@ export const CalendarPage = () => {
   // variable of the last view
   const [lastView, setLastView] = useState<View>(localStorage.getItem('lastView') as View || 'month');
   const dispatch = useDispatch<AppDispatch>();
-  const { events, setActiveEvent } = useCalendarStore();
+  const { events, setActiveEvent, startLoadingEvents } = useCalendarStore();
   const { color } = useAuthStore();
 
   // function to get the style of the event
@@ -63,6 +63,10 @@ export const CalendarPage = () => {
     setLastView(event)
   }
 
+  useEffect(() => {
+    startLoadingEvents();
+  }, [])
+
   return (
     <>
       <Navbar />
@@ -70,9 +74,9 @@ export const CalendarPage = () => {
         culture='es-ES'
         localizer={localizer}
         events={events}
-        startAccessor="start"
+        startAccessor={(event) => new Date(event.start)}
         defaultView={lastView}
-        endAccessor="end"
+        endAccessor={(event) => new Date(event.end)}
         style={{ height: 'calc(100vh - 80px )' }}
         messages={getMessages}
         eventPropGetter={eventStyleGetter}

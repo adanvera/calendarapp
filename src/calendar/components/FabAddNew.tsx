@@ -4,11 +4,14 @@ import { useAuthStore, useCalendarStore, useUiStore } from "../../hooks";
 import { addHours } from "date-fns";
 
 export const FabAddNew = () => {
-
     const { modalOpen } = useUiStore();
     const dispatch = useDispatch<AppDispatch>();
     const { setActiveEvent } = useCalendarStore();
-    const { color } = useAuthStore();
+    const { color, user } = useAuthStore();
+    const uid = user ? user.uid : '';
+    const name = user ? user.name === undefined ? '' : user.name : '';
+    const lastname = user ? user.lastname === undefined ? '' : user.lastname : '';
+    const fullName = user ? `${name.toLowerCase()} ${lastname.toLowerCase()}` : '';
 
     const onSartNewEvent = () => {
         setActiveEvent({
@@ -18,8 +21,8 @@ export const FabAddNew = () => {
             end: addHours(new Date(), 2),
             bgColor: '#fafafa',
             user: {
-                _id: '123',
-                name: 'Adán Vera'
+                _id: uid,
+                name: fullName
             }
         });
         dispatch(modalOpen());
