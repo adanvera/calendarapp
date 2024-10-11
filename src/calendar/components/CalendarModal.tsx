@@ -9,7 +9,7 @@ import Swal from 'sweetalert2';
 import 'sweetalert2/src/sweetalert2.scss';
 import { useDispatch } from 'react-redux';
 import { useCalendarStore, useUiStore } from '../../hooks';
-import { AppDispatch, modalClose } from '../../store';
+import { AppDispatch, modalClose, onSetActiveEvent } from '../../store';
 
 registerLocale('es', es);
 
@@ -114,8 +114,17 @@ export const CalendarModal = () => {
       style={customStyles}
       overlayClassName={'modal-fondo'}
       closeTimeoutMS={200}
+      //disable close on click outside
+      shouldCloseOnOverlayClick={false}
+      
     >
-      <h1> Nuevo evento </h1>
+     <div>
+        <h1> Nuevo evento </h1>
+        <hr />
+
+        <span> <i className="far fa-calendar-plus"></i> </span>
+
+     </div>
       <hr />
       <form className="container" onSubmit={onSubmit}>
 

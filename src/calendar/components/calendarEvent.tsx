@@ -16,10 +16,8 @@ interface EventProps<T> {
 }
 
 export const calendarEvent = (props: EventProps<any>) => {
-
     const { event } = props;
-    const { title , user} = event;
-
+    const { title, user } = event;
     return (
         <>
             <div>

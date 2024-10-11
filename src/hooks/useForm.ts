@@ -63,6 +63,7 @@ export const useForm = (initialForm: FormState = {}, formValidations: FormValida
         onResetForm,
 
         ...formValidation,
+        formValidation,
         isFormValid
     }
 }

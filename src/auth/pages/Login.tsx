@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuthStore, useForm } from '../../hooks';
 import './login.css';
 import Swal from 'sweetalert2';
@@ -16,12 +16,37 @@ const registerForm = {
     registerPassword2: ''
 }
 
+interface loginForValidation {
+    [key: string]: [(value: string) => boolean, string];
+    email: [(value: string) => boolean, string];
+    password: [(value: string) => boolean, string];
+}
+
+const formValidations: loginForValidation = {
+    email: [(value) => value.includes('@'), 'El correo es inválido'],
+    password: [(value) => value.length > 0, 'La contraseña es requerida']
+}
+
 export const Login = () => {
 
     // initializations for the login and register forms
-    const { formState: { email, password }, onInputChange: onChangeLogin } = useForm(loginForm);
-    const { formState: { registerName, registerLastName, registerMail, registerPassword, registerPassword2 }, onInputChange: onChangeRegister } = useForm(registerForm);
+    const {
+        formState: { email, password },
+        onInputChange: onChangeLogin,
+        formValidation: { emailValid, passwordValid },
+        isFormValid
+    } = useForm(loginForm, formValidations);
+
+    const {
+        formState: { registerName, registerLastName, registerMail, registerPassword, registerPassword2 },
+        onInputChange: onChangeRegister
+    } = useForm(registerForm);
+
     const { startLogin, errorMessage, startRegister } = useAuthStore();
+    const [formSubmitted, setFormSubmitted] = useState(false);
+
+    console.log('isFormValid', isFormValid);
+
 
     /**
      * @description This function is called when the login form is submitted
@@ -29,7 +54,9 @@ export const Login = () => {
      */
     const loginSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        startLogin({ email, password });
+        setFormSubmitted(true);
+        if (!isFormValid) return;
+        startLogin({ email, password })
     }
 
     /**
@@ -41,12 +68,19 @@ export const Login = () => {
         if (registerPassword !== registerPassword2) {
             return Swal.fire('Error en el registro', 'Las contraseñas deben ser iguales', 'error');
         }
-
         startRegister({ registerName, registerMail, registerPassword, registerLastName });
     }
 
+    /**
+     * UseEffect to show the error message in a sweetalert when the errorMessage changes
+     */
     useEffect(() => {
-        if (errorMessage !== undefined) {
+        if (
+            errorMessage !== undefined &&
+            errorMessage !== null &&
+            errorMessage !== '' &&
+            typeof errorMessage !== 'object'
+        ) {
             Swal.fire('Error en la autenticación', errorMessage, 'error');
         }
     }, [errorMessage]);
@@ -61,22 +95,28 @@ export const Login = () => {
                             <div className="form-group mb-2">
                                 <input
                                     type="text"
-                                    className="form-control"
+                                    className={`form-control ${emailValid && formSubmitted ? 'is-invalid' : ''}`}
                                     placeholder="Correo"
                                     name='email'
                                     value={email}
                                     onChange={onChangeLogin}
                                 />
+                                {
+                                    formSubmitted && emailValid && <span className="text-danger x-small">{emailValid}</span>
+                                }
                             </div>
                             <div className="form-group mb-2">
                                 <input
                                     type="password"
-                                    className="form-control"
+                                    className={`form-control ${passwordValid && formSubmitted ? 'is-invalid' : ''}`}
                                     placeholder="Contraseña"
                                     name='password'
                                     value={password}
                                     onChange={onChangeLogin}
                                 />
+                                {
+                                    formSubmitted && passwordValid && <span className="text-danger x-small">{passwordValid}</span>
+                                }
                             </div>
                             <div className="form-group mb-2 row">
                                 <div className='col-lg-12'>
